@@ -1,24 +1,19 @@
-package org.argeo.slc.init.osgi;
+package org.argeo.slc.internal.runtime.osgi;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.argeo.api.cms.CmsLog;
 import org.argeo.api.init.RuntimeManager;
-import org.argeo.cms.CmsDeployProperty;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class SlcInitActivator implements BundleActivator {
-	private final static CmsLog log = CmsLog.getLog(SlcInitActivator.class);
+//	private final static CmsLog log = CmsLog.getLog(SlcInitActivator.class);
 
 	private ServiceTracker<RuntimeManager, RuntimeManager> runtimeManagerSt;
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		Path userHome = Paths.get(System.getProperty("user.home"));
+//		Path userHome = Paths.get(System.getProperty("user.home"));
 
 //		{
 //			EquinoxFactory equinoxFactory = new EquinoxFactory();
@@ -40,7 +35,6 @@ public class SlcInitActivator implements BundleActivator {
 			@Override
 			public RuntimeManager addingService(ServiceReference<RuntimeManager> reference) {
 				RuntimeManager runtimeManager = super.addingService(reference);
-				log.debug("Found runtime manager " + runtimeManager);
 				new Thread() {
 					public void run() {
 //						try {
@@ -49,27 +43,24 @@ public class SlcInitActivator implements BundleActivator {
 //							return;
 //						}
 
-						runtimeManager.startRuntime("native/test1", (config) -> {
-							config.put("osgi.console", "host1:2023");
-							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
-							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
-							config.put(CmsDeployProperty.HOST.getProperty(), "host1");
-//							for (String key : config.keySet()) {
-//								System.out.println(key + "=" + config.get(key));
-////								log.debug(() -> key + "=" + config.get(key));
-//							}
-//							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
-						});
-						runtimeManager.startRuntime("native/test2", (config) -> {
+//						runtimeManager.startRuntime("rcp/test1", (config) -> {
+//							config.put("osgi.console", "host1:2023");
+//							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
+////							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
+//							config.put(CmsDeployProperty.HOST.getProperty(), "host1");
+////							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
+//						});
+
+						runtimeManager.startRuntime("rap/test2", (config) -> {
 							config.put("osgi.console", "host2:2023");
-							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
-							// config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
-							config.put(CmsDeployProperty.HOST.getProperty(), "host2");
-//							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
+							config.put("argeo.sshd.port", "2222");
+							config.put("argeo.http.port", "7070");
+							config.put("argeo.host", "host2");
+							String a2Source = config.get("argeo.osgi.sources");
+							config.put("argeo.osgi.sources", a2Source
+									+ ",a2+reference:///home/mbaudier/dev/git/unstable/output/a2?include=eu.netiket.on.apaf");
+							config.put("argeo.osgi.start.6", "eu.netiket.on.apaf");
 ////							config.put("argeo.directory", "ipa:///");
-//							Path instanceData = userHome
-//									.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
-//							config.put(InitConstants.PROP_OSGI_INSTANCE_AREA, instanceData.toUri().toString());
 						});
 					}
 				}.start();

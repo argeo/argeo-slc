@@ -16,7 +16,6 @@ import org.argeo.api.a2.A2Source;
 import org.argeo.api.a2.FsA2Source;
 import org.argeo.api.init.InitConstants;
 import org.argeo.api.init.RuntimeContext;
-import org.argeo.cms.CmsDeployProperty;
 import org.argeo.init.osgi.OsgiRuntimeContext;
 import org.argeo.slc.WellKnownConstants;
 import org.argeo.slc.build.Distribution;
@@ -59,11 +58,11 @@ public class OsgiCmsDeployment implements Deployment {
 					targetData.getInstanceData().toRealPath().toUri().toString());
 
 			if (targetData.getHost() != null) {
-				config.put(CmsDeployProperty.HOST.getProperty(), targetData.getHost().toString());
+				config.put("argeo.host", targetData.getHost().toString());
 			}
 
 			if (targetData.getHttpPort() != null) {
-				config.put(CmsDeployProperty.HTTP_PORT.getProperty(), targetData.getHttpPort().toString());
+				config.put("argeo.http.port", targetData.getHttpPort().toString());
 			}
 
 			Path configurationArea = Files.createTempDirectory("slc-cms-test");

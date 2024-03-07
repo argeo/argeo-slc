@@ -1,6 +1,4 @@
 
-Bundle-Activator: org.argeo.slc.init.osgi.SlcInitActivator
-
 Import-Package: \
 org.apache.commons.logging,\
 org.postgresql;version="[42,43)";resolution:=optional,\
