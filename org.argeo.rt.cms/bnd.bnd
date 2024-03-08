@@ -1,11 +1,11 @@
 Bundle-Activator: org.argeo.init.osgi.SubFrameworkActivator
 
-Import-Package:\
-org.argeo.init.osgi,\
-org.eclipse.osgi.launch;resolution:=optional,\
-org.argeo.api.cms,\
-org.argeo.api.cms.directory,\
-org.argeo.api.cms.keyring,\
-org.argeo.api.cms.transaction,\
-org.argeo.api.cms.ux,\
+#Import-Package:\
+#org.eclipse.osgi.launch;resolution:=optional,\
+#*
 
+#org.argeo.api.cms,\
+#org.argeo.api.cms.directory,\
+#org.argeo.api.cms.keyring,\
+#org.argeo.api.cms.transaction,\
+#org.argeo.api.cms.ux,\
