@@ -17,6 +17,7 @@ BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
+org.argeo.rt.cms \
 lib/linux/org.argeo.slc.systemd \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
