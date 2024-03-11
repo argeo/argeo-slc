@@ -3,12 +3,12 @@ package org.argeo.slc.runtime;
 import java.lang.System.Logger.Level;
 import java.util.Stack;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.execution.RefSpecAttribute;
-import org.argeo.slc.primitive.PrimitiveSpecAttribute;
-import org.argeo.slc.primitive.PrimitiveUtils;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionFlow;
+import org.argeo.api.slc.execution.ExecutionSpecAttribute;
+import org.argeo.api.slc.execution.RefSpecAttribute;
+import org.argeo.api.slc.primitive.PrimitiveSpecAttribute;
+import org.argeo.api.slc.primitive.PrimitiveUtils;
 
 /** Manage parameters that need to be set during the instantiation of a flow */
 public class InstantiationManager {

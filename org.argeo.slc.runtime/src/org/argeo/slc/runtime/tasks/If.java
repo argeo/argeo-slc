@@ -1,6 +1,6 @@
 package org.argeo.slc.runtime.tasks;
 
-import org.argeo.slc.SlcException;
+import org.argeo.api.slc.SlcException;
 
 /** Conditional execution */
 public class If implements Runnable {

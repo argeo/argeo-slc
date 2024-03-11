@@ -8,15 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.argeo.slc.DefaultNameVersion;
-import org.argeo.slc.NameVersion;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
-import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.execution.SlcAgent;
-import org.argeo.slc.execution.SlcAgentCli;
+import org.argeo.api.slc.DefaultNameVersion;
+import org.argeo.api.slc.NameVersion;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.api.slc.execution.ExecutionModuleDescriptor;
+import org.argeo.api.slc.execution.ExecutionSpec;
+import org.argeo.api.slc.execution.ExecutionSpecAttribute;
+import org.argeo.api.slc.execution.SlcAgent;
+import org.argeo.api.slc.execution.SlcAgentCli;
 
 /**
  * Authenticates thread and executes synchronously a command line execution.

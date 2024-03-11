@@ -13,11 +13,11 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionModulesManager;
-import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionModulesManager;
+import org.argeo.api.slc.execution.ExecutionProcess;
+import org.argeo.api.slc.execution.ExecutionStep;
+import org.argeo.api.slc.execution.RealizedFlow;
 
 /**
  * Main thread coordinating an {@link ExecutionProcess}, launching parallel or

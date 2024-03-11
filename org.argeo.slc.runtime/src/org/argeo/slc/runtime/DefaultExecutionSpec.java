@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.execution.RefSpecAttribute;
-import org.argeo.slc.execution.RefValueChoice;
+import org.argeo.api.slc.execution.ExecutionSpec;
+import org.argeo.api.slc.execution.ExecutionSpecAttribute;
+import org.argeo.api.slc.execution.RefSpecAttribute;
+import org.argeo.api.slc.execution.RefValueChoice;
 
 /** Spring based implementation of execution specifications. */
 public class DefaultExecutionSpec implements ExecutionSpec, Serializable {

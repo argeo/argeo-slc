@@ -12,11 +12,11 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
-import org.argeo.slc.execution.ExecutionModulesManager;
-import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.execution.FlowConfigurationException;
-import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.api.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.api.slc.execution.ExecutionModulesManager;
+import org.argeo.api.slc.execution.ExecutionStep;
+import org.argeo.api.slc.execution.FlowConfigurationException;
+import org.argeo.api.slc.execution.RealizedFlow;
 
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {

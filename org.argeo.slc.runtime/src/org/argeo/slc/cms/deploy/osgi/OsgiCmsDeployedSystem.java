@@ -1,12 +1,12 @@
 package org.argeo.slc.cms.deploy.osgi;
 
-import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.ModularDistribution;
+import org.argeo.api.slc.build.Distribution;
+import org.argeo.api.slc.build.ModularDistribution;
+import org.argeo.api.slc.deploy.DeploymentData;
+import org.argeo.api.slc.deploy.TargetData;
 import org.argeo.slc.cms.deploy.CmsDeployedSystem;
 import org.argeo.slc.cms.deploy.CmsDeploymentData;
 import org.argeo.slc.cms.deploy.CmsTargetData;
-import org.argeo.slc.deploy.DeploymentData;
-import org.argeo.slc.deploy.TargetData;
 import org.osgi.framework.BundleContext;
 
 /** A deployed OSGi-based Argeo CMS system. */

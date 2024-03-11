@@ -14,7 +14,7 @@ uninstall: osgi-uninstall
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
-org.argeo.slc.api \
+org.argeo.api.slc \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
 org.argeo.rt.cms \

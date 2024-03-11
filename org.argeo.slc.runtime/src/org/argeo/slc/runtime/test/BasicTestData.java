@@ -1,6 +1,6 @@
 package org.argeo.slc.runtime.test;
 
-import org.argeo.slc.test.TestData;
+import org.argeo.api.slc.test.TestData;
 
 public class BasicTestData implements TestData {
 	private Object expected;

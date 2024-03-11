@@ -9,11 +9,11 @@ import org.argeo.api.a2.A2Component;
 import org.argeo.api.a2.A2Contribution;
 import org.argeo.api.a2.A2Module;
 import org.argeo.api.a2.A2Source;
-import org.argeo.slc.CategoryNameVersion;
-import org.argeo.slc.DefaultCategoryNameVersion;
-import org.argeo.slc.NameVersion;
-import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.ModularDistribution;
+import org.argeo.api.slc.CategoryNameVersion;
+import org.argeo.api.slc.DefaultCategoryNameVersion;
+import org.argeo.api.slc.NameVersion;
+import org.argeo.api.slc.build.Distribution;
+import org.argeo.api.slc.build.ModularDistribution;
 
 public class A2Distribution implements ModularDistribution {
 	private List<A2Source> a2Sources = new ArrayList<>();

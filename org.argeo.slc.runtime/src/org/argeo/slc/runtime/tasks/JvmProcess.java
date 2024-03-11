@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.SlcException;
+import org.argeo.api.slc.SlcException;
 
 /** A Java Virtual Machine process. */
 public class JvmProcess extends SystemCall {

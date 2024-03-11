@@ -3,8 +3,8 @@ package org.argeo.slc.runtime;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.api.slc.execution.ExecutionProcess;
+import org.argeo.api.slc.execution.ExecutionStep;
 
 /** The thread group attached to a given {@link SlcExecution}. */
 public class ProcessThreadGroup extends ThreadGroup {

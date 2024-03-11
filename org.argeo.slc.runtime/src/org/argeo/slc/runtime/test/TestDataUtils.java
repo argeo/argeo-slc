@@ -1,8 +1,8 @@
 package org.argeo.slc.runtime.test;
 
-import org.argeo.slc.UnsupportedException;
-import org.argeo.slc.test.TestData;
-import org.argeo.slc.test.TestDataProvider;
+import org.argeo.api.slc.UnsupportedException;
+import org.argeo.api.slc.test.TestData;
+import org.argeo.api.slc.test.TestDataProvider;
 
 /** Utilities for dealing with test datas. */
 public class TestDataUtils {

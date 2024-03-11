@@ -16,18 +16,18 @@ import org.argeo.api.a2.A2Source;
 import org.argeo.api.a2.FsA2Source;
 import org.argeo.api.init.InitConstants;
 import org.argeo.api.init.RuntimeContext;
+import org.argeo.api.slc.WellKnownConstants;
+import org.argeo.api.slc.build.Distribution;
+import org.argeo.api.slc.deploy.DeployedSystem;
+import org.argeo.api.slc.deploy.Deployment;
+import org.argeo.api.slc.deploy.DeploymentData;
+import org.argeo.api.slc.deploy.TargetData;
 import org.argeo.init.osgi.OsgiRuntimeContext;
-import org.argeo.slc.WellKnownConstants;
-import org.argeo.slc.build.Distribution;
 import org.argeo.slc.cms.deploy.CmsDeployedSystem;
 import org.argeo.slc.cms.deploy.CmsDeploymentData;
 import org.argeo.slc.cms.deploy.CmsTargetData;
 import org.argeo.slc.cms.deploy.SimpleCmsDeploymentData;
 import org.argeo.slc.cms.distribution.A2Distribution;
-import org.argeo.slc.deploy.DeployedSystem;
-import org.argeo.slc.deploy.Deployment;
-import org.argeo.slc.deploy.DeploymentData;
-import org.argeo.slc.deploy.TargetData;
 
 /** The process of deploying an OSGi based Argeo CMS system. */
 public class OsgiCmsDeployment implements Deployment {
