@@ -2,11 +2,11 @@ package org.argeo.slc.runtime;
 
 import java.util.Map;
 
-import org.argeo.slc.execution.ExecutionContext;
-import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
-import org.argeo.slc.execution.ExecutionModulesManager;
-import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.api.slc.execution.ExecutionContext;
+import org.argeo.api.slc.execution.ExecutionFlow;
+import org.argeo.api.slc.execution.ExecutionFlowDescriptorConverter;
+import org.argeo.api.slc.execution.ExecutionModulesManager;
+import org.argeo.api.slc.execution.RealizedFlow;
 
 /** Provides the base feature of an execution module manager. */
 public abstract class AbstractExecutionModulesManager implements

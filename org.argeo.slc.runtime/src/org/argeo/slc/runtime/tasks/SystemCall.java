@@ -39,12 +39,12 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.UnsupportedException;
-import org.argeo.slc.execution.ExecutionResources;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.UnsupportedException;
+import org.argeo.api.slc.execution.ExecutionResources;
+import org.argeo.api.slc.test.TestResult;
+import org.argeo.api.slc.test.TestStatus;
 import org.argeo.slc.runtime.test.SimpleResultPart;
-import org.argeo.slc.test.TestResult;
-import org.argeo.slc.test.TestStatus;
 
 /** Execute an OS specific system call. */
 public class SystemCall implements Runnable {

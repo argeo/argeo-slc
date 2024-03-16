@@ -1,7 +1,7 @@
 package org.argeo.slc.runtime.test;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.test.TestStatus;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.test.TestStatus;
 
 public abstract class SlcTestUtils {
 	public static String statusToString(Integer status) {

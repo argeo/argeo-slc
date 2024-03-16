@@ -2,10 +2,10 @@ package org.argeo.slc.runtime.test;
 
 import java.io.Serializable;
 
-import org.argeo.slc.test.TestResultPart;
-import org.argeo.slc.test.TestRun;
-import org.argeo.slc.test.TestRunAware;
-import org.argeo.slc.test.TestStatus;
+import org.argeo.api.slc.test.TestResultPart;
+import org.argeo.api.slc.test.TestRun;
+import org.argeo.api.slc.test.TestRunAware;
+import org.argeo.api.slc.test.TestStatus;
 
 /**
  * <p>

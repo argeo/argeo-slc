@@ -7,10 +7,10 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.test.TestResult;
-import org.argeo.slc.test.TestResultPart;
-import org.argeo.slc.test.TestRun;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.test.TestResult;
+import org.argeo.api.slc.test.TestResultPart;
+import org.argeo.api.slc.test.TestRun;
 
 /**
  * Basic implementation of a test result containing only a list of result parts.

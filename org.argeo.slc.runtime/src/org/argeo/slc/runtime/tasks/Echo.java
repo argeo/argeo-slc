@@ -7,7 +7,7 @@ import java.lang.System.Logger.Level;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
-import org.argeo.slc.SlcException;
+import org.argeo.api.slc.SlcException;
 
 public class Echo implements Runnable {
 	private final static Logger defaultLogger = System.getLogger(Echo.class.getName());

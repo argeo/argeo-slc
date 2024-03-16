@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.execution.ExecutionStack;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionFlow;
+import org.argeo.api.slc.execution.ExecutionSpecAttribute;
+import org.argeo.api.slc.execution.ExecutionStack;
 
 /** Canonical implementation of an execution stack. */
 public class DefaultExecutionStack implements ExecutionStack {

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.api.slc.execution.ExecutionProcess;
+import org.argeo.api.slc.execution.ExecutionStep;
+import org.argeo.api.slc.execution.RealizedFlow;
 
 /** Canonical implementation of an {@link ExecutionProcess} as a bean. */
 public class DefaultProcess implements ExecutionProcess {

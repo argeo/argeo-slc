@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.argeo.slc.DefaultNameVersion;
-import org.argeo.slc.NameVersion;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.execution.ExecutionModulesManager;
-import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.SlcAgent;
+import org.argeo.api.slc.DefaultNameVersion;
+import org.argeo.api.slc.NameVersion;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionModuleDescriptor;
+import org.argeo.api.slc.execution.ExecutionModulesManager;
+import org.argeo.api.slc.execution.ExecutionProcess;
+import org.argeo.api.slc.execution.SlcAgent;
 
 /** Implements the base methods of an SLC agent. */
 public class DefaultAgent implements SlcAgent {

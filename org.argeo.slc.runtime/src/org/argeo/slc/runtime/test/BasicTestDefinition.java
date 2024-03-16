@@ -1,13 +1,13 @@
 package org.argeo.slc.runtime.test;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.test.IncompatibleTestDataException;
-import org.argeo.slc.test.TestData;
-import org.argeo.slc.test.TestDefinition;
-import org.argeo.slc.test.TestResult;
-import org.argeo.slc.test.TestRun;
-import org.argeo.slc.test.TestStatus;
-import org.argeo.slc.test.context.ContextAware;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.test.IncompatibleTestDataException;
+import org.argeo.api.slc.test.TestData;
+import org.argeo.api.slc.test.TestDefinition;
+import org.argeo.api.slc.test.TestResult;
+import org.argeo.api.slc.test.TestRun;
+import org.argeo.api.slc.test.TestStatus;
+import org.argeo.api.slc.test.context.ContextAware;
 
 /** Understands basic test data and context aware test data. */
 public class BasicTestDefinition implements TestDefinition {

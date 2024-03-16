@@ -1,22 +1,23 @@
 include sdk.mk
 .PHONY: clean all osgi jni
 
-all: osgi jni
+all: osgi-all
 	$(MAKE) -f Makefile-rcp.mk all
 	
 install: osgi-install
 
 uninstall: osgi-uninstall
 
-jni:
-	$(MAKE) -C jni
+#jni:
+#	$(MAKE) -C jni
 
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
-org.argeo.slc.api \
+org.argeo.api.slc \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
+org.argeo.rt.cms \
 lib/linux/org.argeo.slc.systemd \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
@@ -29,7 +30,7 @@ log/syslogger/org.argeo.tp \
 org.argeo.tp \
 org.argeo.tp.httpd \
 org.argeo.tp.sys \
-osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
 swt/rap/org.argeo.tp.swt.workbench \
@@ -38,9 +39,12 @@ swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
 $(A2_CATEGORY)
 
-clean:
-	rm -rf $(BUILD_BASE)
-	$(MAKE) -C jni clean
+NATIVE_PACKAGES= \
+org_argeo_api_uuid_libuuid
+
+clean: osgi-clean
+#	rm -rf $(BUILD_BASE)
+#	$(MAKE) -C jni clean
 	$(MAKE) -f Makefile-rcp.mk clean
 
 native-deps-debian:

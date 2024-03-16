@@ -12,7 +12,7 @@ swt/rcp/org.argeo.tool.desktop \
 
 DEP_CATEGORIES = \
 org.argeo.tp \
-osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rcp/org.argeo.tp.swt \
 lib/linux/x86_64/swt/rcp/org.argeo.tp.swt \

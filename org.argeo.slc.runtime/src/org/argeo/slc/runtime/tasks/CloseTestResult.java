@@ -1,6 +1,6 @@
 package org.argeo.slc.runtime.tasks;
 
-import org.argeo.slc.test.TestResult;
+import org.argeo.api.slc.test.TestResult;
 
 public class CloseTestResult implements Runnable {
 	private TestResult testResult;

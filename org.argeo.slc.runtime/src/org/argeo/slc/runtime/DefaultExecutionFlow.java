@@ -10,11 +10,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionContext;
-import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.api.slc.SlcException;
+import org.argeo.api.slc.execution.ExecutionContext;
+import org.argeo.api.slc.execution.ExecutionFlow;
+import org.argeo.api.slc.execution.ExecutionSpec;
+import org.argeo.api.slc.execution.ExecutionSpecAttribute;
 
 /** Default implementation of an execution flow. */
 public class DefaultExecutionFlow implements ExecutionFlow {

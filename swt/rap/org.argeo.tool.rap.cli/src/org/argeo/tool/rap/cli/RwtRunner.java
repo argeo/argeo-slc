@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Objects;
 
 import javax.servlet.ServletContextEvent;
@@ -17,10 +18,12 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.application.EntryPoint;
+import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -58,6 +61,7 @@ public class RwtRunner {
 		// rwt-resources requires a file system
 		try {
 			tempDir = Files.createTempDirectory("argeo-rwtRunner");
+			context.setAttribute(ApplicationConfiguration.RESOURCE_ROOT_LOCATION, tempDir.resolve("www").toString());
 			// FIXME we need a base directory
 //			context.setBaseResource(new PathResource(tempDir.resolve("www")));
 		} catch (IOException e) {
@@ -121,17 +125,27 @@ public class RwtRunner {
 		RwtRunner rwtRunner = new RwtRunner();
 
 		String entryPoint = "app";
-		ApplicationConfiguration applicationConfiguration = (application) -> {
-			application.setOperationMode(OperationMode.SWT_COMPATIBILITY);
-			application.addEntryPoint("/" + entryPoint, () -> new EntryPoint() {
-				@Override
-				public int createUI() {
-					MiniDesktopManager miniDesktopManager = new MiniDesktopManager(false, false);
-					miniDesktopManager.init();
-					miniDesktopManager.run();
-					return 0;
-				}
-			}, null);
+		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration() {
+
+			@Override
+			public void configure(Application application) {
+				application.setOperationMode(OperationMode.SWT_COMPATIBILITY);
+				application.addEntryPoint("/" + entryPoint, new EntryPointFactory() {
+
+					@Override
+					public EntryPoint create() {
+						return new EntryPoint() {
+							@Override
+							public int createUI() {
+								MiniDesktopManager miniDesktopManager = new MiniDesktopManager(false, false);
+								miniDesktopManager.init();
+								miniDesktopManager.run();
+								return 0;
+							}
+						};
+					}
+				}, new HashMap<>());
+			}
 		};
 
 		rwtRunner.setApplicationConfiguration(applicationConfiguration);
