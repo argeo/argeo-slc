@@ -56,10 +56,8 @@ public class SlcInitActivator implements BundleActivator {
 							config.put("argeo.sshd.port", "2222");
 							config.put("argeo.http.port", "7070");
 							config.put("argeo.host", "host2");
-							String a2Source = config.get("argeo.osgi.sources");
-							config.put("argeo.osgi.sources", a2Source
-									+ ",a2+reference:///home/mbaudier/dev/git/unstable/output/a2?include=eu.netiket.on.apaf");
-							config.put("argeo.osgi.start.6", "eu.netiket.on.apaf");
+							config.put("argeo.osgi.start.6",
+									"argeo.osgi.start.6=org.example.suite.theme,org.example.suite.core,org.example.suite.ui,org.example.suite.ui.rap");
 ////							config.put("argeo.directory", "ipa:///");
 						});
 					}
