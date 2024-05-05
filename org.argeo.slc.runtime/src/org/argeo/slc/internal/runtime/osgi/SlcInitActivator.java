@@ -43,13 +43,13 @@ public class SlcInitActivator implements BundleActivator {
 //							return;
 //						}
 
-//						runtimeManager.startRuntime("rcp/test1", (config) -> {
-//							config.put("osgi.console", "host1:2023");
+						runtimeManager.startRuntime("rcp/test1", (config) -> {
+							config.put("osgi.console", "host1:2023");
+							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
 //							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
-////							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
+//							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
 //							config.put(CmsDeployProperty.HOST.getProperty(), "host1");
-////							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
-//						});
+						});
 
 						runtimeManager.startRuntime("rap/test2", (config) -> {
 							config.put("osgi.console", "host2:2023");
