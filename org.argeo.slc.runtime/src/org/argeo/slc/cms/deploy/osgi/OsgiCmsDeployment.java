@@ -103,7 +103,7 @@ public class OsgiCmsDeployment implements Deployment {
 			}
 
 			// FIXME use runtime manager
-			runtimeContext = new OsgiRuntimeContext(config);
+			runtimeContext = new OsgiRuntimeContext(null, config);
 			runtimeContext.run();
 
 //			deployedSystem = new OsgiCmsDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
