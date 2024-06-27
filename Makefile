@@ -38,6 +38,7 @@ swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
+lib/linux/x86_64/org.argeo.tp.sys \
 $(A2_CATEGORY)
 
 NATIVE_PACKAGES= \
