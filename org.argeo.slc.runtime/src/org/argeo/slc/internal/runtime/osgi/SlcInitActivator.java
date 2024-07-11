@@ -43,23 +43,21 @@ public class SlcInitActivator implements BundleActivator {
 //							return;
 //						}
 
-//						runtimeManager.startRuntime("rcp/test1", (config) -> {
-//							config.put("osgi.console", "host1:2023");
+						runtimeManager.startRuntime("rcp/test1", (config) -> {
+							config.put("osgi.console", "host1:2023");
+							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
 //							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
-////							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
+//							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
 //							config.put(CmsDeployProperty.HOST.getProperty(), "host1");
-////							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
-//						});
+						});
 
 						runtimeManager.startRuntime("rap/test2", (config) -> {
 							config.put("osgi.console", "host2:2023");
 							config.put("argeo.sshd.port", "2222");
 							config.put("argeo.http.port", "7070");
 							config.put("argeo.host", "host2");
-							String a2Source = config.get("argeo.osgi.sources");
-							config.put("argeo.osgi.sources", a2Source
-									+ ",a2+reference:///home/mbaudier/dev/git/unstable/output/a2?include=eu.netiket.on.apaf");
-							config.put("argeo.osgi.start.6", "eu.netiket.on.apaf");
+							config.put("argeo.osgi.start.6",
+									"argeo.osgi.start.6=org.example.suite.theme,org.example.suite.core,org.example.suite.ui,org.example.suite.ui.rap");
 ////							config.put("argeo.directory", "ipa:///");
 						});
 					}

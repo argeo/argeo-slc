@@ -30,6 +30,7 @@ log/syslogger/org.argeo.tp \
 org.argeo.tp \
 org.argeo.tp.httpd \
 org.argeo.tp.sys \
+osgi/equinox/org.argeo.tp.osgi.framework \
 osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
@@ -37,6 +38,7 @@ swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
+lib/linux/x86_64/org.argeo.tp.sys \
 $(A2_CATEGORY)
 
 NATIVE_PACKAGES= \
