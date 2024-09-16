@@ -3,7 +3,7 @@ package org.argeo.cms.integration;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.util.ExceptionsChain;

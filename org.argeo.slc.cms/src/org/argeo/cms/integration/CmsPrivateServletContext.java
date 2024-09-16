@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.argeo.api.cms.CmsAuth;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
@@ -32,7 +32,8 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 	 * Add the {@link AccessControlContext} as a request attribute, or redirect to
 	 * the login page.
 	 */
-	@Override
+	// FIXME handle security
+	//	@Override
 	public boolean handleSecurity(final HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		LoginContext lc = null;
 		ServletHttpRequest request = new ServletHttpRequest(req);

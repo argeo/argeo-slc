@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import jakarta.annotation.PostConstruct;
 import javax.security.auth.Subject;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CurrentUser;
