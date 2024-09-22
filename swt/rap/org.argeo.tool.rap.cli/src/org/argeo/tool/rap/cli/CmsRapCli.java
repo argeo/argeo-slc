@@ -17,7 +17,7 @@ import org.argeo.api.cms.CmsContext;
 import org.argeo.api.cms.CmsState;
 import org.argeo.api.register.Component;
 import org.argeo.api.register.ComponentRegister;
-import org.argeo.cms.jetty.CmsJettyServer;
+import org.argeo.cms.jetty.ee10.CmsJettyServer;
 import org.argeo.cms.runtime.StaticCms;
 import org.argeo.cms.swt.app.CmsUserApp;
 import org.argeo.cms.web.CmsWebApp;
