@@ -20,8 +20,8 @@ import org.argeo.api.cms.CmsAuth;
 import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.auth.RemoteAuthCallback;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
-import org.argeo.cms.servlet.ServletHttpRequest;
-import org.argeo.cms.servlet.ServletHttpResponse;
+import org.argeo.cms.jakarta.servlet.ServletHttpRequest;
+import org.argeo.cms.jakarta.servlet.ServletHttpResponse;
 import org.osgi.service.useradmin.Authorization;
 
 import com.fasterxml.jackson.core.JsonGenerator;

@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.argeo.api.cms.CmsAuth;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.auth.RemoteAuthUtils;
-import org.argeo.cms.servlet.ServletHttpRequest;
-import org.argeo.cms.servlet.ServletHttpResponse;
+import org.argeo.cms.jakarta.servlet.ServletHttpRequest;
+import org.argeo.cms.jakarta.servlet.ServletHttpResponse;
 import org.osgi.service.http.context.ServletContextHelper;
 
 /** Manages security access to servlets. */

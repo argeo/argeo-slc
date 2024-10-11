@@ -18,8 +18,8 @@ import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.CurrentUser;
 import org.argeo.cms.auth.RemoteAuthCallback;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
-import org.argeo.cms.servlet.ServletHttpRequest;
-import org.argeo.cms.servlet.ServletHttpResponse;
+import org.argeo.cms.jakarta.servlet.ServletHttpRequest;
+import org.argeo.cms.jakarta.servlet.ServletHttpResponse;
 
 /** Externally authenticate an http session. */
 public class CmsLogoutServlet extends HttpServlet {

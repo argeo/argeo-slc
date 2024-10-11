@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.argeo.cms.jetty.ee10.CmsJettyServer;
+import org.argeo.cms.jetty.ee.CmsEeJettyServer;
 import org.argeo.cms.web.CmsWebApp;
 import org.eclipse.jetty.ee10.servlet.DefaultServlet;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -15,7 +15,7 @@ import org.eclipse.rap.rwt.engine.RWTServlet;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
-public class RapJettyServer extends CmsJettyServer {
+public class RapJettyServer extends CmsEeJettyServer {
 	private CmsWebApp cmsWebApp;
 
 	@Override

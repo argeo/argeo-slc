@@ -17,7 +17,7 @@ import org.argeo.api.cms.CmsContext;
 import org.argeo.api.cms.CmsState;
 import org.argeo.api.register.Component;
 import org.argeo.api.register.ComponentRegister;
-import org.argeo.cms.jetty.ee10.CmsJettyServer;
+import org.argeo.cms.jetty.ee.CmsEeJettyServer;
 import org.argeo.cms.runtime.StaticCms;
 import org.argeo.cms.swt.app.CmsUserApp;
 import org.argeo.cms.web.CmsWebApp;
@@ -88,7 +88,7 @@ public class CmsRapCli extends CommandsCli {
 						Component<RapJettyServer> rwtRunnerC = new Component.Builder<>(rwtRunner) //
 								.addActivation(rwtRunner::start) //
 								.addDeactivation(rwtRunner::stop) //
-								.addType(CmsJettyServer.class) //
+								.addType(CmsEeJettyServer.class) //
 								.addDependency(register.getSingleton(CmsState.class), rwtRunner::setCmsState, null) //
 								.addDependency(cmsWebAppC.getType(CmsWebApp.class), rwtRunner::setCmsWebApp, null) //
 								.build(register);
@@ -107,7 +107,7 @@ public class CmsRapCli extends CommandsCli {
 					// open browser in app mode
 					Thread.sleep(2000);// wait for RWT to be ready
 					String browserCommand = "google-chrome --app=http://localhost:"
-							+ staticCms.getComponentRegister().getObject(CmsJettyServer.class).getHttpPort() + "/data";
+							+ staticCms.getComponentRegister().getObject(CmsEeJettyServer.class).getHttpPort() + "/data";
 					Runtime.getRuntime().exec(browserCommand);
 				} catch (InterruptedException | IOException e) {
 					e.printStackTrace();

@@ -18,8 +18,8 @@ import jakarta.websocket.server.ServerEndpoint;
 
 import org.argeo.api.acr.ldap.NamingUtils;
 import org.argeo.api.cms.CmsLog;
-import org.argeo.cms.websocket.server.CmsWebSocketConfigurator;
-import org.argeo.cms.websocket.server.WebSocketView;
+import org.argeo.cms.jakarta.websocket.server.CmsWebSocketConfigurator;
+import org.argeo.cms.jakarta.websocket.server.WebSocketView;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
