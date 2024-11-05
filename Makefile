@@ -50,6 +50,9 @@ clean: osgi-clean
 	$(MAKE) -f Makefile-rcp.mk clean
 
 native-deps-debian:
-	sudo apt install uuid-dev
+	sudo apt -y install uuid-dev
+
+native-deps-msys2:
+	pacman --noconfirm -S libuuid-devel
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
