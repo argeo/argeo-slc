@@ -15,7 +15,7 @@ org.argeo.tp \
 osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rcp/org.argeo.tp.swt \
-lib/linux/x86_64/swt/rcp/org.argeo.tp.swt \
+lib/x86_64-linux-gnu/swt/rcp/org.argeo.tp.swt \
 swt/rcp/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \

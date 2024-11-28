@@ -1,0 +1,12 @@
+<!--
+osgEarth Sample - Render ReadyMap imagery as a flat Plate Carre map
+-->
+<map name="Plate Carre projection">    
+    
+    <options>
+        <profile>plate-carre</profile>
+        <terrain tile_size="2"/>
+    </options>
+    
+    <xi:include href="readymap_imagery.xml"/>
+</map>

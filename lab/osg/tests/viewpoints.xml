@@ -1,0 +1,150 @@
+<?xml version="1.0" ?>
+<viewpoints>
+    <viewpoint name="Mt Saint Helens">
+        <heading>38.7144</heading>
+        <pitch>-16.5932</pitch>
+        <range>27784.4m</range>
+        <long>-122.1783922007742</long>
+        <lat>46.26669980080434</lat>
+        <height>1103.579998404719</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint>
+        <heading>17.33521725357022</heading>
+        <height>2462.60273069609</height>
+        <lat>46.82181702111031</lat>
+        <long>-121.7814936386096</long>
+        <name>Mt Rainier</name>
+        <pitch>-21.29241356548601</pitch>
+        <range>23926.75258864516</range>
+    </viewpoint>
+    <viewpoint>
+        <heading>-72.70835146844568</heading>
+        <height>6334.845537136309</height>
+        <lat>27.94213038800919</lat>
+        <long>86.9936567556778</long>
+        <name>Nepal</name>
+        <pitch>-18.63803872963365</pitch>
+        <range>13611.24948464565</range>
+    </viewpoint>
+    <viewpoint>
+        <name>Grand Canyon</name>
+        <heading>-0.8051</heading>
+        <pitch>-21.5398</pitch>
+        <range>28203.1m</range>
+        <long>-113.6095843647886</long>
+        <lat>35.7698531293813</lat>
+        <height>1345.386212403886</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs </srs>
+    </viewpoint>
+    <viewpoint name="Sahara Desert">
+        <heading>-121.37</heading>
+        <pitch>-11.2494</pitch>
+        <range>14568m</range>
+        <long>12.85790518927135</long>
+        <lat>25.30076063533988</lat>
+        <height>643.3327136170119</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint>
+        <name>Hallstatt</name>
+        <heading>-21.36</heading>
+        <pitch>-35.0965</pitch>
+        <range>14786m</range>
+        <long>13.65444893405288</long>
+        <lat>47.56470451831095</lat>
+        <height>502.9998890347779</height>
+    </viewpoint>
+    <viewpoint>
+        <name>Castel Gandolfo</name>
+        <heading>111.96</heading>
+        <pitch>-13.0742</pitch>
+        <range>4296.89m</range>
+        <long>12.66116827312502</long>
+        <lat>41.75440141710527</lat>
+        <height>340.4608940472826</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint>
+        <name>Sion</name>
+        <heading>56.9871</heading>
+        <pitch>-11.165</pitch>
+        <range>4136.16m</range>
+        <long>7.285408955688748</long>
+        <lat>46.20564340401928</lat>
+        <height>533.4425292843953</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="Quilotoa Lake">
+        <heading>59.7275</heading>
+        <pitch>-15.6577</pitch>
+        <range>13806.2m</range>
+        <long>-78.88765976722279</long>
+        <lat>-0.8457417820864883</lat>
+        <height>3530.116631868295</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="Sonoma">
+        <heading>-19.7694</heading>
+        <pitch>-89.8951</pitch>
+        <range>1527.08m</range>
+        <long>-122.4600185010713</long>
+        <lat>38.28944457619371</lat>
+        <height>-9.02603252325207</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs </srs>
+    </viewpoint>
+    <viewpoint name="Passo dello Stelvio">
+        <heading>-36.0105</heading>
+        <pitch>-44.2402</pitch>
+        <range>1117.34m</range>
+        <long>10.45728639794742</long>
+        <lat>46.53056423352673</lat>
+        <height>2686.409382589161</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs </srs>
+    </viewpoint>
+    <viewpoint name="Uluru">
+        <heading>25.0068</heading>
+        <pitch>-22.0497</pitch>
+        <range>6946.77m</range>
+        <long>131.0325742056094</long>
+        <lat>-25.34751837532118</lat>
+        <height>723.1286411993206</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="San Diego">
+        <heading>-16.4329</heading>
+        <pitch>-14.0265</pitch>
+        <range>3472.89m</range>
+        <long>-117.161746837086</long>
+        <lat>32.71525054676937</lat>
+        <height>-8.165950482711196</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="NYC">
+        <heading>-154.559</heading>
+        <pitch>-13.2848</pitch>
+        <range>1682.73m</range>
+        <long>-73.95631112584063</long>
+        <lat>40.79957700485529</lat>
+        <height>-12.0398843260482</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="Toronto">
+        <heading>0.109355</heading>
+        <pitch>-20.3288</pitch>
+        <range>4697.58m</range>
+        <long>-79.3900928274749</long>
+        <lat>43.65526709145713</lat>
+        <height>72.19622826110572</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+    <viewpoint name="Chicago">
+        <heading>-62.0354</heading>
+        <pitch>-16.6573</pitch>
+        <range>2923.13m</range>
+        <long>-87.62551572200417</long>
+        <lat>41.89062024802782</lat>
+        <height>166.1599231623113</height>
+        <srs>+proj=longlat +datum=WGS84 +no_defs</srs>
+    </viewpoint>
+</viewpoints>
