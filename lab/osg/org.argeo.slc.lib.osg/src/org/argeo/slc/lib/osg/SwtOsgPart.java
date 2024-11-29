@@ -1,31 +1,8 @@
-/*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
- *
- * This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 package org.argeo.slc.lib.osg;
 
-/*
- * SWT OpenGL snippet: use JOGL to draw to an SWT GLCanvas
- *
- * For a list of all SWT example snippets see
- * http://www.eclipse.org/swt/snippets/
- *
- * @since 3.2
- */
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.opengl.GLCanvas;
@@ -61,7 +38,7 @@ public class SwtOsgPart {
 //		context = GLDrawableFactory.getFactory(GLProfile.getGL2GL3()).createExternalGLContext();
 
 //		System.out.println(System.getProperty("org.eclipse.swt.internal.deviceZoom"));
-		run();
+//		run();
 	}
 
 	private static native void doBackendInit();
