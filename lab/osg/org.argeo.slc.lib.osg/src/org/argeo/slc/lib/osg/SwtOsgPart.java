@@ -97,12 +97,19 @@ public class SwtOsgPart {
 			canvas.swapBuffers();
 		});
 
-		canvas.addMouseMoveListener((e) -> {
+		// for RAP compatibility
+		canvas.addListener(SWT.MouseMove, (e) -> {
 			canvas.setCurrent();
 //			System.out.println(e);
 			doMouseMoveEvent(pointer, e.x, e.y, e.button);
 			canvas.redraw();
 		});
+//		canvas.addMouseMoveListener((e) -> {
+//			canvas.setCurrent();
+////			System.out.println(e);
+//			doMouseMoveEvent(pointer, e.x, e.y, e.button);
+//			canvas.redraw();
+//		});
 		canvas.addMouseListener(new MouseListener() {
 
 			@Override
@@ -126,11 +133,18 @@ public class SwtOsgPart {
 				canvas.redraw();
 			}
 		});
-		canvas.addMouseWheelListener((e) -> {
+
+		// for RAP compatibility
+		canvas.addListener(SWT.MouseWheel, (e) -> {
 			canvas.setCurrent();
 			doMouseWheelEvent(pointer, e.x, currentCanvasHeight() - e.y, 0, -e.count * 10);
 			canvas.redraw();
 		});
+//		canvas.addMouseWheelListener((e) -> {
+//			canvas.setCurrent();
+//			doMouseWheelEvent(pointer, e.x, currentCanvasHeight() - e.y, 0, -e.count * 10);
+//			canvas.redraw();
+//		});
 	}
 
 	private int currentCanvasHeight() {
