@@ -56,13 +56,15 @@ public class SwtOsgPart {
 
 	private static native void doMouseWheelEvent(long pointer, int x, int y, int orientation, int delta);
 
-	public void close() {
+	public synchronized void close() {
 		canvas.dispose();
 		doDestroy(pointer);
 	}
 
-	private void drawOsg() {
-		doPaint(pointer);
+	private synchronized void drawOsg() {
+		if (!canvas.isDisposed()) {
+			doPaint(pointer);
+		}
 	}
 
 	void run() {
@@ -144,6 +146,7 @@ public class SwtOsgPart {
 			if (!display.readAndDispatch())
 				display.sleep();
 		}
+		display.readAndDispatch();// make sure we don't have mouse events left
 
 		osgPart.close();
 		display.dispose();

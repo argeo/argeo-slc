@@ -49,6 +49,7 @@ private:
 class OsgWidget: public osgViewer::Viewer {
 public:
 	OsgWidget(int x, int y, int width, int height, float scale);
+	~OsgWidget();
 	void paintGL();
 	void resizeGL(int x, int y, int w, int h);
 
@@ -71,7 +72,7 @@ private:
 	float devicePixelRatio();
 
 private:
-	osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> graph_win_embed_rp_;
+	osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gwEmbedded;
 	float scale;
 };
 

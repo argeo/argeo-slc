@@ -25,7 +25,7 @@ OsgWidget::OsgWidget(int x, int y, int width, int height, float s) {
 //	traits->setInheritedWindowPixelFormat = true;
 //	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(x * scale,
 //			y * scale, width * scale, height * scale);
-	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(traits);
+	gwEmbedded = new osgViewer::GraphicsWindowEmbedded(traits);
 //	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(x * scale,
 //			y * scale, width * scale, height * scale);
 	getCamera()->setViewport(
@@ -33,7 +33,7 @@ OsgWidget::OsgWidget(int x, int y, int width, int height, float s) {
 	getCamera()->setProjectionMatrixAsPerspective(30.0f,
 			static_cast<double>(width * scale)
 					/ static_cast<double>(height * scale), 1.0f, 10000.0f);
-	getCamera()->setGraphicsContext(graph_win_embed_rp_);
+	getCamera()->setGraphicsContext(gwEmbedded);
 
 	//getCamera()->setClearColor(osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f));
 //	getCamera()->setRenderOrder(osg::Camera::POST_RENDER);
@@ -50,6 +50,10 @@ OsgWidget::OsgWidget(int x, int y, int width, int height, float s) {
 //			10000.0);
 
 	setCameraManipulator(new osgGA::TrackballManipulator);
+}
+
+OsgWidget::~OsgWidget() {
+	//delete gwEmbedded;
 }
 
 float OsgWidget::devicePixelRatio() {
@@ -83,29 +87,29 @@ void OsgWidget::paintGL() {
 void OsgWidget::resizeGL(int x, int y, int w, int h) {
 	auto scale = devicePixelRatio();
 	getEventQueue()->windowResize(x * scale, y * scale, w * scale, h * scale);
-	graph_win_embed_rp_->resized(x * scale, y * scale, w * scale, h * scale);
+	gwEmbedded->resized(x * scale, y * scale, w * scale, h * scale);
 	getCamera()->setViewport(0, 0, w * scale, h * scale);
 }
 
 void OsgWidget::mousePressEvent(OsgMouseEvent *event) {
-	graph_win_embed_rp_->getEventQueue()->mouseButtonPress(
+	gwEmbedded->getEventQueue()->mouseButtonPress(
 			event->x() * devicePixelRatio(), event->y() * devicePixelRatio(),
 			GetOsgMouseButton(event->button()));
 }
 
 void OsgWidget::mouseReleaseEvent(OsgMouseEvent *event) {
-	graph_win_embed_rp_->getEventQueue()->mouseButtonRelease(
+	gwEmbedded->getEventQueue()->mouseButtonRelease(
 			event->x() * devicePixelRatio(), event->y() * devicePixelRatio(),
 			GetOsgMouseButton(event->button()));
 }
 
 void OsgWidget::mouseMoveEvent(OsgMouseEvent *event) {
-	graph_win_embed_rp_->getEventQueue()->mouseMotion(
-			event->x() * devicePixelRatio(), event->y() * devicePixelRatio());
+	gwEmbedded->getEventQueue()->mouseMotion(event->x() * devicePixelRatio(),
+			event->y() * devicePixelRatio());
 }
 
 void OsgWidget::mouseDoubleClickEvent(OsgMouseEvent *event) {
-	graph_win_embed_rp_->getEventQueue()->mouseDoubleButtonPress(
+	gwEmbedded->getEventQueue()->mouseDoubleButtonPress(
 			event->x() * devicePixelRatio(), event->y() * devicePixelRatio(),
 			GetOsgMouseButton(event->button()));
 }
@@ -114,7 +118,7 @@ void OsgWidget::wheelEvent(OsgWheelEvent *event) {
 	//graph_win_embed_rp_->getEventQueue()->mouseScroll2D(event->x(), event->y());
 
 	// TODO Understand why osgEarth is not refreshed on scroll
-	graph_win_embed_rp_->getEventQueue()->mouseScroll(
+	gwEmbedded->getEventQueue()->mouseScroll(
 	// TODO use SWT.VERTICAL
 			event->orientation() == 0 ?
 					(event->delta() > 0 ?
