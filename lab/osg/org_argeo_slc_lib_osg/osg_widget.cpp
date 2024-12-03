@@ -26,12 +26,14 @@ float OsgWidget::devicePixelRatio() {
 void OsgWidget::paintGL() {
 	if (!isRealized()) {
 		realize();
+//		std::cerr << "realize" << std::endl;
 	}
 
 	double minFrameTime = _runMaxFrameRate > 0.0 ? 1.0 / _runMaxFrameRate : 0.0;
 	if (_runFrameScheme == ON_DEMAND) {
 		if (checkNeedToDoFrame()) {
 			frame();
+//			std::cerr << "frame (needed)" << std::endl;
 		} else {
 			// we don't need to render a frame but we don't want to spin the run loop so make sure the minimum
 			// loop time is 1/100th of second, if not otherwise set, so enabling the frame microSleep below to
@@ -41,10 +43,8 @@ void OsgWidget::paintGL() {
 		}
 	} else {
 		frame();
+//		std::cerr << "frame" << std::endl;
 	}
-
-//	frame();
-//	update();
 }
 
 void OsgWidget::resizeGL(int x, int y, int w, int h) {
@@ -68,7 +68,7 @@ void OsgWidget::mouseReleaseEvent(OsgMouseEvent *event) {
 
 void OsgWidget::mouseMoveEvent(OsgMouseEvent *event) {
 	graph_win_embed_rp_->getEventQueue()->mouseMotion(
-			event->x() * devicePixelRatio(), event->x() * devicePixelRatio());
+			event->x() * devicePixelRatio(), event->y() * devicePixelRatio());
 }
 
 void OsgWidget::mouseDoubleClickEvent(OsgMouseEvent *event) {
@@ -78,6 +78,9 @@ void OsgWidget::mouseDoubleClickEvent(OsgMouseEvent *event) {
 }
 
 void OsgWidget::wheelEvent(OsgWheelEvent *event) {
+	//graph_win_embed_rp_->getEventQueue()->mouseScroll2D(event->x(), event->y());
+
+	// TODO Understand why osgEarth is not refreshed on scroll
 	graph_win_embed_rp_->getEventQueue()->mouseScroll(
 	// TODO use SWT.VERTICAL
 			event->orientation() == 0 ?

@@ -10,6 +10,7 @@ public:
 		_y = y;
 		_button = button;
 	}
+
 	float x() {
 		return _x;
 	}
@@ -27,9 +28,10 @@ private:
 	int _button;
 };
 
-class OsgWheelEvent {
+class OsgWheelEvent: public OsgMouseEvent {
 public:
-	OsgWheelEvent(int orientation, int delta) {
+	OsgWheelEvent(float x, float y, int orientation, int delta) :
+			OsgMouseEvent(x, y, 2) {
 		_orientation = orientation;
 		_delta = delta;
 	}

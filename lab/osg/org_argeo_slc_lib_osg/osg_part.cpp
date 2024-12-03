@@ -173,7 +173,7 @@ JNIEXPORT void JNICALL Java_org_argeo_slc_lib_osg_SwtOsgPart_doMouseWheelEvent(
 		JNIEnv*, jclass, jlong pointer, jint x, jint y, jint orientation,
 		jint delta) {
 	OsgWidget *osgWidget = (OsgWidget*) pointer;
-	OsgWheelEvent event(orientation, delta);
-	osgWidget->wheelEvent(&event);
+	OsgWheelEvent wheelEvent(x, y, orientation, delta);
+	osgWidget->wheelEvent(&wheelEvent);
 }
 

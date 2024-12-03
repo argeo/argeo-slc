@@ -99,52 +99,56 @@ public class SwtOsgPart {
 
 		// for RAP compatibility
 		canvas.addListener(SWT.MouseMove, (e) -> {
-			canvas.setCurrent();
-//			System.out.println(e);
-			doMouseMoveEvent(pointer, e.x, e.y, e.button);
+//			canvas.setCurrent();
+			doMouseMoveEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
 			canvas.redraw();
 		});
-//		canvas.addMouseMoveListener((e) -> {
-//			canvas.setCurrent();
-////			System.out.println(e);
-//			doMouseMoveEvent(pointer, e.x, e.y, e.button);
-//			canvas.redraw();
-//		});
 		canvas.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseUp(MouseEvent e) {
-				canvas.setCurrent();
-				doMouseReleaseEvent(pointer, e.x, currentCanvasHeight() - e.y, e.button);
+//				canvas.setCurrent();
+				doMouseReleaseEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
 				canvas.redraw();
 			}
 
 			@Override
 			public void mouseDown(MouseEvent e) {
-				canvas.setCurrent();
-				doMousePressEvent(pointer, e.x, currentCanvasHeight() - e.y, e.button);
+//				canvas.setCurrent();
+				doMousePressEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
 				canvas.redraw();
 			}
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				canvas.setCurrent();
-				doMouseDoubleClickEvent(pointer, e.x, currentCanvasHeight() - e.y, e.button);
+//				canvas.setCurrent();
+				doMouseDoubleClickEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
 				canvas.redraw();
 			}
 		});
 
 		// for RAP compatibility
 		canvas.addListener(SWT.MouseWheel, (e) -> {
-			canvas.setCurrent();
-			doMouseWheelEvent(pointer, e.x, currentCanvasHeight() - e.y, 0, -e.count * 10);
+//			canvas.setCurrent();
+			doMouseWheelEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), 0, -e.count * 10);
 			canvas.redraw();
 		});
-//		canvas.addMouseWheelListener((e) -> {
-//			canvas.setCurrent();
-//			doMouseWheelEvent(pointer, e.x, currentCanvasHeight() - e.y, 0, -e.count * 10);
-//			canvas.redraw();
-//		});
+	}
+
+	private int toOsgMouseX(Event e) {
+		return e.x;
+	}
+
+	private int toOsgMouseY(Event e) {
+		return e.y;
+	}
+
+	private int toOsgMouseX(MouseEvent e) {
+		return e.x;
+	}
+
+	private int toOsgMouseY(MouseEvent e) {
+		return e.y;
 	}
 
 	private int currentCanvasHeight() {
