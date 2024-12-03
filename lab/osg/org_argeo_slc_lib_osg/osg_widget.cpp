@@ -6,15 +6,48 @@
 
 OsgWidget::OsgWidget(int x, int y, int width, int height, float s) {
 	scale = s;
-	graph_win_embed_rp_ = setUpViewerAsEmbeddedInWindow(x * scale, y * scale,
-			width * scale, height * scale);
 
-	auto camera = getCamera();
-	camera->setGraphicsContext(graph_win_embed_rp_);
-	camera->setClearMask(camera->getClearMask() | GL_STENCIL_BUFFER_BIT);
-	camera->setClearColor(osg::Vec4(0.176f, 0.18f, 0.157f, 0.9f));
-	camera->setProjectionMatrixAsPerspective(30.0, (double) width / height, 1.0,
-			10000.0);
+	setThreadingModel(SingleThreaded);
+
+	osg::ref_ptr<osg::GraphicsContext::Traits> traits =
+			new osg::GraphicsContext::Traits;
+
+	// Setup the traits parameters
+	traits->x = x * scale;
+	traits->y = y * scale;
+	traits->width = width * scale; //put here the width of the window view
+	traits->height = height * scale; //put here the height of the window view
+	traits->depth = 24; //keep memory down, you can put 16
+	traits->alpha = 1;
+//	traits->windowDecoration = false;
+//	traits->doubleBuffer = true;
+//	traits->sharedContext = 0;
+//	traits->setInheritedWindowPixelFormat = true;
+//	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(x * scale,
+//			y * scale, width * scale, height * scale);
+	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(traits);
+//	graph_win_embed_rp_ = new osgViewer::GraphicsWindowEmbedded(x * scale,
+//			y * scale, width * scale, height * scale);
+	getCamera()->setViewport(
+			new osg::Viewport(0, 0, width * scale, height * scale));
+	getCamera()->setProjectionMatrixAsPerspective(30.0f,
+			static_cast<double>(width * scale)
+					/ static_cast<double>(height * scale), 1.0f, 10000.0f);
+	getCamera()->setGraphicsContext(graph_win_embed_rp_);
+
+	//getCamera()->setClearColor(osg::Vec4(0.0f, 1.0f, 1.0f, 0.5f));
+//	getCamera()->setRenderOrder(osg::Camera::POST_RENDER);
+	getCamera()->setAllowEventFocus(true);
+//	getCamera()->setClearMask(GL_DEPTH_BUFFER_BIT);
+
+//	graph_win_embed_rp_ = setUpViewerAsEmbeddedInWindow(x * scale, y * scale,
+//			width * scale, height * scale);
+//	auto camera = getCamera();
+//	camera->setGraphicsContext(graph_win_embed_rp_);
+//	camera->setClearMask(camera->getClearMask() | GL_STENCIL_BUFFER_BIT);
+//	camera->setClearColor(osg::Vec4(0.176f, 0.18f, 0.157f, 0.9f));
+//	camera->setProjectionMatrixAsPerspective(30.0, (double) width / height, 1.0,
+//			10000.0);
 
 	setCameraManipulator(new osgGA::TrackballManipulator);
 }

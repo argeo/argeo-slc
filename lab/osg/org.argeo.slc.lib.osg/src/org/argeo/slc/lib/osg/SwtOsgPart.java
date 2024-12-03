@@ -20,7 +20,6 @@ public class SwtOsgPart {
 	}
 
 	private final GLCanvas canvas;
-//	final GLContext context;
 
 	private long pointer;
 
@@ -35,10 +34,6 @@ public class SwtOsgPart {
 		canvas = new GLCanvas(cmp, SWT.NONE, data);
 
 		canvas.setCurrent();
-//		context = GLDrawableFactory.getFactory(GLProfile.getGL2GL3()).createExternalGLContext();
-
-//		System.out.println(System.getProperty("org.eclipse.swt.internal.deviceZoom"));
-//		run();
 	}
 
 	private static native void doBackendInit();
@@ -73,18 +68,16 @@ public class SwtOsgPart {
 	void run() {
 		Rectangle area = canvas.getClientArea();
 		canvas.setCurrent();
-//		context.makeCurrent();
-		String zoom = System.getProperty("org.eclipse.swt.internal.deviceZoom");
-		float scale = zoom != null ? Float.parseFloat(zoom) / 100 : 1;
+//		float zoom = Float.parseFloat(System.getProperty("org.eclipse.swt.internal.deviceZoom", "100"));
+		float zoom = canvas.getDisplay().getPrimaryMonitor().getZoom();
+		float scale = zoom / 100;
 		pointer = doInit(area.x, area.y, area.width, area.height, scale);
-//		context.release();
 
 		canvas.addListener(SWT.Resize, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				Rectangle bounds = canvas.getBounds();
 				canvas.getDisplay().asyncExec(() -> {
-					canvas.setCurrent();
+					Rectangle bounds = canvas.getBounds();
 					doResize(pointer, 0, 0, bounds.width, bounds.height);
 					currentCanvasHeight = bounds.height;
 				});
@@ -99,56 +92,35 @@ public class SwtOsgPart {
 
 		// for RAP compatibility
 		canvas.addListener(SWT.MouseMove, (e) -> {
-//			canvas.setCurrent();
-			doMouseMoveEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
+			doMouseMoveEvent(pointer, e.x, e.y, e.button);
 			canvas.redraw();
 		});
 		canvas.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseUp(MouseEvent e) {
-//				canvas.setCurrent();
-				doMouseReleaseEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
+				doMouseReleaseEvent(pointer, e.x, e.y, e.button);
 				canvas.redraw();
 			}
 
 			@Override
 			public void mouseDown(MouseEvent e) {
-//				canvas.setCurrent();
-				doMousePressEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
+				doMousePressEvent(pointer, e.x, e.y, e.button);
 				canvas.redraw();
 			}
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-//				canvas.setCurrent();
-				doMouseDoubleClickEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), e.button);
+				doMouseDoubleClickEvent(pointer, e.x, e.y, e.button);
 				canvas.redraw();
 			}
 		});
 
 		// for RAP compatibility
 		canvas.addListener(SWT.MouseWheel, (e) -> {
-//			canvas.setCurrent();
-			doMouseWheelEvent(pointer, toOsgMouseX(e), toOsgMouseY(e), 0, -e.count * 10);
+			doMouseWheelEvent(pointer, e.x, e.y, 0, -e.count * 10);
 			canvas.redraw();
 		});
-	}
-
-	private int toOsgMouseX(Event e) {
-		return e.x;
-	}
-
-	private int toOsgMouseY(Event e) {
-		return e.y;
-	}
-
-	private int toOsgMouseX(MouseEvent e) {
-		return e.x;
-	}
-
-	private int toOsgMouseY(MouseEvent e) {
-		return e.y;
 	}
 
 	private int currentCanvasHeight() {
