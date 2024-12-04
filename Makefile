@@ -18,7 +18,7 @@ org.argeo.api.slc \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
 org.argeo.rt.cms \
-lib/linux/org.argeo.slc.systemd \
+os/linux/org.argeo.slc.systemd \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
 swt/rap/org.argeo.tool.rap.cli \
