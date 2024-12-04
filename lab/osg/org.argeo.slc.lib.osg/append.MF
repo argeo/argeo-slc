@@ -1,9 +1,0 @@
-Import-Package: org.eclipse.swt,
- org.eclipse.swt.graphics,
- org.eclipse.swt.layout,
- org.eclipse.swt.opengl,
- org.eclipse.swt.widgets,
- org.eclipse.swt.events,
- com.jogamp.opengl,
- com.jogamp.opengl.glu,
- com.jogamp.opengl.fixedfunc
