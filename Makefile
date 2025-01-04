@@ -1,6 +1,8 @@
 include sdk.mk
 .PHONY: clean all osgi jni
 
+msys_version := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0)
+
 all: osgi-all
 	$(MAKE) -f Makefile-rcp.mk all
 	
@@ -41,8 +43,10 @@ swt/rap/org.argeo.cms \
 lib/x86_64-linux-gnu/org.argeo.tp.sys \
 $(A2_CATEGORY)
 
+ifeq ($(msys_version), 0)	
 NATIVE_PACKAGES= \
 org_argeo_api_uuid_libuuid
+endif
 
 clean: osgi-clean
 #	rm -rf $(BUILD_BASE)
