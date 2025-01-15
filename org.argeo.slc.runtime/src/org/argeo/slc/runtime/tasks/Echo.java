@@ -1,12 +1,11 @@
 package org.argeo.slc.runtime.tasks;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.commons.io.FileUtils;
 import org.argeo.api.slc.SlcException;
 
 public class Echo implements Runnable {
@@ -21,11 +20,9 @@ public class Echo implements Runnable {
 
 		if (writeTo != null) {
 			try {
-				File file = writeTo.toFile();
-
-				log().log(Level.DEBUG, () -> "Write to " + file);
+				log().log(Level.DEBUG, () -> "Write to " + writeTo);
 				if (message != null)
-					FileUtils.writeStringToFile(file, message.toString());
+					Files.writeString(writeTo, message.toString());
 			} catch (IOException e) {
 				throw new SlcException("Could not write to " + writeTo, e);
 			}
