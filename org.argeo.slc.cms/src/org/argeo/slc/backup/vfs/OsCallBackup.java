@@ -1,6 +1,5 @@
 package org.argeo.slc.backup.vfs;
 
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,10 +9,10 @@ import java.util.Map;
 //import org.apache.commons.exec.ExecuteStreamHandler;
 //import org.apache.commons.exec.Executor;
 //import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.io.IOUtils;
+//import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileObject;
-import org.argeo.api.cli.CommandLine;
+import org.argeo.api.cli.NativeCommandLine;
 import org.argeo.api.cms.CmsLog;
 
 /**
@@ -57,8 +56,7 @@ public class OsCallBackup extends AbstractAtomicBackup {
 		}
 
 		// FIXME use variables
-		CommandLine commandLine = CommandLine.parse(commandToUse);// , variables);
-		ByteArrayOutputStream errBos = new ByteArrayOutputStream();
+		NativeCommandLine commandLine = NativeCommandLine.parse(commandToUse);// , variables);
 		if (log.isTraceEnabled())
 			log.trace(commandLine.toString());
 
@@ -78,11 +76,7 @@ public class OsCallBackup extends AbstractAtomicBackup {
 //			String errStr = new String(err);
 //			throw new MaintenanceException("Process " + commandLine + " failed (" + e.getExitValue() + "): " + errStr, e);
 		} catch (Exception e) {
-			byte[] err = errBos.toByteArray();
-			String errStr = new String(err);
-			throw new MaintenanceException("Process " + commandLine + " failed: " + errStr, e);
-		} finally {
-			IOUtils.closeQuietly(errBos);
+			throw new MaintenanceException("Process " + commandLine + " failed", e);
 		}
 	}
 
