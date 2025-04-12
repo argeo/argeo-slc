@@ -20,6 +20,12 @@ argeo.cms.jmod:
 		--libs argeo.cms/lib \
 		argeo.cms.jmod
 
+jlink-rt:
+	rm -rf rt/argeo-rt-$ARGEO_RT-amd64
+	#/usr/lib/jvm/java-$ARGEO_RT-amd64/bin/jlink --module-path a2/osgi/equinox/org.argeo.tp.osgi.framework/:a2/org.argeo.cms:jmod --output rt/argeo-rt-$ARGEO_RT-amd64 --add-modules jdk.jlink --compress 2 --strip-debug
+	/usr/lib/jvm/java-$ARGEO_RT-amd64/bin/jlink --module-path a2/osgi/equinox/org.argeo.tp.osgi.framework/:a2/org.argeo.cms:jmod --output rt/argeo-rt-$ARGEO_RT-amd64 --add-modules argeo.cms,jdk.localedata,jdk.jlink,jdk.jcmd --include-locales=en,fr,de,es,pt,ru,ua,el,ar,il
+	du -sh rt/argeo-rt-$ARGEO_RT-amd64
+
 $(A2_OUTPUT)/jmods/%.jmod: $(JMODS_BASE)/%/classes/module-info.class
 	mkdir -p $(dir $@)
 	mkdir -p $(dir $<)/../lib
