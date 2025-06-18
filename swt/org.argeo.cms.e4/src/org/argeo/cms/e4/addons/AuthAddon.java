@@ -97,10 +97,10 @@ public class AuthAddon {
 			throw new CmsException("Cannot log out", e);
 		}
 		
-		// FIXME make it more generic
-		HttpServletRequest request = org.argeo.eclipse.ui.specific.UiContext.getHttpRequest();
-		if (request != null)
-			request.getSession().setMaxInactiveInterval(0);
+		// TODO find a way to expire session
+//		HttpServletRequest request = org.argeo.eclipse.ui.specific.UiContext.getHttpRequest();
+//		if (request != null)
+//			request.getSession().setMaxInactiveInterval(0);
 	}
 
 }
