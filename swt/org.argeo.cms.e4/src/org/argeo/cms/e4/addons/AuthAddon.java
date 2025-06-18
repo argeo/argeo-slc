@@ -3,9 +3,7 @@ package org.argeo.cms.e4.addons;
 import java.security.AccessController;
 import java.util.Iterator;
 
-import jakarta.annotation.PostConstruct;
 import javax.security.auth.Subject;
-import jakarta.servlet.http.HttpServletRequest;
 
 import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CurrentUser;
@@ -16,6 +14,8 @@ import org.eclipse.e4.ui.model.application.ui.MUIElement;
 import org.eclipse.e4.ui.model.application.ui.basic.MTrimBar;
 import org.eclipse.e4.ui.model.application.ui.basic.MTrimmedWindow;
 import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
+
+import jakarta.annotation.PostConstruct;
 
 public class AuthAddon {
 	private final static CmsLog log = CmsLog.getLog(AuthAddon.class);
