@@ -1,6 +1,8 @@
 include sdk.mk
 .PHONY: clean all osgi jni
 
+msys_version := $(if $(findstring Msys, $(shell uname -o)),$(word 1, $(subst ., ,$(shell uname -r))),0)
+
 all: osgi-all
 	$(MAKE) -f Makefile-rcp.mk all
 	
@@ -18,7 +20,7 @@ org.argeo.api.slc \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
 org.argeo.rt.cms \
-lib/linux/org.argeo.slc.systemd \
+os/linux/org.argeo.slc.systemd \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
 swt/rap/org.argeo.tool.rap.cli \
@@ -38,11 +40,13 @@ swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
-lib/linux/x86_64/org.argeo.tp.sys \
+lib/x86_64-linux-gnu/org.argeo.tp.sys \
 $(A2_CATEGORY)
 
+ifeq ($(msys_version), 0)	
 NATIVE_PACKAGES= \
 org_argeo_api_uuid_libuuid
+endif
 
 clean: osgi-clean
 #	rm -rf $(BUILD_BASE)
@@ -50,6 +54,9 @@ clean: osgi-clean
 	$(MAKE) -f Makefile-rcp.mk clean
 
 native-deps-debian:
-	sudo apt install uuid-dev
+	sudo apt -y install uuid-dev
+
+native-deps-msys2:
+	pacman --noconfirm -S libuuid-devel
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk

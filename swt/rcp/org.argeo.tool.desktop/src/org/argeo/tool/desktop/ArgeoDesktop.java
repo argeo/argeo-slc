@@ -11,10 +11,10 @@ public class ArgeoDesktop extends ArgeoCli {
 		addCommandsCli(new MiniDesktopCli("minidesktop"));
 	}
 
-	@Override
-	public String getDescription() {
-		return "Argeo desktop utilities";
-	}
+//	@Override
+//	public String getDescription() {
+//		return "Argeo desktop utilities";
+//	}
 
 	public static void main(String[] args) {
 		mainImpl(new ArgeoDesktop("argeo-desktop"), args);

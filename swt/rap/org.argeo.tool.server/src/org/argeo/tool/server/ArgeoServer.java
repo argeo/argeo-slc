@@ -10,10 +10,10 @@ public class ArgeoServer extends ArgeoCli {
 		addCommandsCli(new CmsRapCli("cms"));
 	}
 
-	@Override
-	public String getDescription() {
-		return "Argeo server utilities";
-	}
+//	@Override
+//	public String getDescription() {
+//		return "Argeo server utilities";
+//	}
 
 	public static void main(String[] args) {
 		mainImpl(new ArgeoServer("argeo"), args);

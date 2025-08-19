@@ -3,15 +3,14 @@ package org.argeo.cms.swt.rcp.cli;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import org.argeo.api.acr.CrAttributeType;
 import org.argeo.api.acr.spi.ProvidedRepository;
+import org.argeo.api.cli.CLine;
 import org.argeo.api.cli.CommandsCli;
 import org.argeo.api.cli.DescribedCommand;
+import org.argeo.api.cli.ValuedOpt;
 import org.argeo.api.cms.CmsApp;
 import org.argeo.api.register.Component;
 import org.argeo.api.register.ComponentRegister;
@@ -26,31 +25,47 @@ public class CmsCli extends CommandsCli {
 		addCommand("static", new Launch());
 	}
 
-	@Override
-	public String getDescription() {
-		return "Argeo CMS utilities.";
-	}
+//	@Override
+//	public String getDescription() {
+//		return "Argeo CMS utilities.";
+//	}
 
-	static class Launch implements DescribedCommand<String> {
-		private Option dataOption;
-		private Option uiOption;
+	static class Launch extends DescribedCommand<String> {
+		enum Opt implements ValuedOpt {
+			data, //
+			ui, //
+			;
 
-		@Override
-		public Options getOptions() {
-			Options options = new Options();
-			dataOption = Option.builder().longOpt("data").hasArg().required()
-					.desc("path to the writable data area (mandatory)").build();
-			uiOption = Option.builder().longOpt("ui").desc("open a user interface").build();
-			options.addOption(dataOption);
-			options.addOption(uiOption);
-			return options;
+			@Override
+			public CrAttributeType type() {
+				return switch (this) {
+				case data -> CrAttributeType.ANY_URI;
+				default -> CrAttributeType.BOOLEAN;
+				};
+			}
+
 		}
 
 		@Override
-		public String apply(List<String> args) {
-			CommandLine cl = toCommandLine(args);
-			String dataPath = cl.getOptionValue(dataOption);
-			boolean ui = cl.hasOption(uiOption);
+		protected Class<? extends Enum<?>> getOptClass() {
+			return Opt.class;
+		}
+
+//		@Override
+//		public Options getOptions() {
+//			Options options = new Options();
+//			dataOption = Option.builder().longOpt("data").hasArg().required()
+//					.desc("path to the writable data area (mandatory)").build();
+//			uiOption = Option.builder().longOpt("ui").desc("open a user interface").build();
+//			options.addOption(dataOption);
+//			options.addOption(uiOption);
+//			return options;
+//		}
+
+		@Override
+		public String execute(CLine cLine) {
+			String dataPath = cLine.get(Opt.data, String.class).orElseThrow();
+			boolean ui = cLine.flag(Opt.ui);
 
 			Path instancePath = Paths.get(dataPath);
 			System.setProperty("osgi.instance.area", instancePath.toUri().toString());
@@ -103,10 +118,10 @@ public class CmsCli extends CommandsCli {
 			return null;
 		}
 
-		@Override
-		public String getDescription() {
-			return "Launch a static CMS.";
-		}
+//		@Override
+//		public String getDescription() {
+//			return "Launch a static CMS.";
+//		}
 
 	}
 }

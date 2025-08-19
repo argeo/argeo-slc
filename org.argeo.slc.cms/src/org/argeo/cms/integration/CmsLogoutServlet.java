@@ -8,18 +8,18 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.argeo.api.cms.CmsAuth;
 import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.CurrentUser;
 import org.argeo.cms.auth.RemoteAuthCallback;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
-import org.argeo.cms.servlet.ServletHttpRequest;
-import org.argeo.cms.servlet.ServletHttpResponse;
+import org.argeo.cms.jakarta.servlet.ServletHttpRequest;
+import org.argeo.cms.jakarta.servlet.ServletHttpResponse;
 
 /** Externally authenticate an http session. */
 public class CmsLogoutServlet extends HttpServlet {

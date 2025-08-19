@@ -3,6 +3,8 @@ package org.argeo.cms.e4.rap;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.argeo.api.cms.CmsApp;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.swt.dialogs.CmsFeedback;
 import org.eclipse.rap.e4.E4ApplicationConfig;
 import org.eclipse.rap.rwt.application.Application;
@@ -14,6 +16,8 @@ import org.osgi.framework.BundleContext;
 
 /** Base class for CMS RAP applications. */
 public abstract class AbstractRapE4App implements ApplicationConfiguration {
+	private final static CmsLog log = CmsLog.getLog(AbstractRapE4App.class);
+
 	private String e4Xmi;
 	private String path;
 	private String lifeCycleUri = "bundleclass://org.argeo.cms.e4.rap/org.argeo.cms.e4.rap.CmsLoginLifecycle";
@@ -45,6 +49,7 @@ public abstract class AbstractRapE4App implements ApplicationConfiguration {
 		} else {
 			addEntryPoints(application);
 		}
+		log.info("Configured E4 web app /" + contextName);
 	}
 
 	protected Map<String, String> getBaseProperties() {
@@ -62,6 +67,7 @@ public abstract class AbstractRapE4App implements ApplicationConfiguration {
 		CmsE4EntryPointFactory entryPointFactory = new CmsE4EntryPointFactory(config);
 		application.addEntryPoint(path, entryPointFactory, properties);
 		application.setOperationMode(OperationMode.SWT_COMPATIBILITY);
+		log.debug("Added web entry point /" + contextName + path);
 	}
 
 	/**
@@ -117,17 +123,17 @@ public abstract class AbstractRapE4App implements ApplicationConfiguration {
 		this.contextName = contextName;
 	}
 
-	public void init(BundleContext bundleContext, Map<String, Object> properties) {
+	public void init(BundleContext bundleContext, Map<String, String> properties) {
 		this.bundleContext = bundleContext;
-		for (String key : properties.keySet()) {
-			Object value = properties.get(key);
-			if (value != null)
-				baseProperties.put(key, value.toString());
-		}
+		this.baseProperties = properties;
+//		for (String key : properties.keySet()) {
+//			Object value = properties.get(key);
+//			if (value != null)
+//				baseProperties.put(key, value);
+//		}
 
-		if (properties.containsKey(CONTEXT_NAME_PROPERTY)) {
-			assert properties.get(CONTEXT_NAME_PROPERTY) != null;
-			contextName = properties.get(CONTEXT_NAME_PROPERTY).toString();
+		if (properties.containsKey(CmsApp.CONTEXT_NAME_PROPERTY)) {
+			contextName = properties.get(CmsApp.CONTEXT_NAME_PROPERTY);
 		} else {
 			contextName = "<unknown context>";
 		}

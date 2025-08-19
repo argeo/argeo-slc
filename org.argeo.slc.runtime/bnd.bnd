@@ -1,6 +1,3 @@
-#Bundle-Activator: org.argeo.slc.internal.runtime.osgi.SlcInitActivator
-
 Import-Package: \
 org.argeo.api.slc.deploy,\
-org.apache.commons.exec.*;resolution:=optional,\
 *

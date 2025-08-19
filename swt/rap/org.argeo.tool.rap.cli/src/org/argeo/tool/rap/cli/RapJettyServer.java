@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
-
-import org.argeo.cms.jetty.CmsJettyServer;
+import org.argeo.cms.jetty.ee.CmsEeJettyServer;
 import org.argeo.cms.web.CmsWebApp;
-import org.eclipse.jetty.ee8.servlet.DefaultServlet;
-import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee8.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 
-public class RapJettyServer extends CmsJettyServer {
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+
+public class RapJettyServer extends CmsEeJettyServer {
 	private CmsWebApp cmsWebApp;
 
 	@Override
-	protected void addServlets(ServletContextHandler servletContextHandler) throws ServletException {
+	protected void addServlets(ServletContextHandler servletContextHandler) {
 		// rwt-resources requires a file system
 		try {
 			Path tempDir = Files.createTempDirectory("argeo-rwtRunner");
