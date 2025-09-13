@@ -1,0 +1,6 @@
+Import-Package: \
+org.eclipse.swt,\
+org.eclipse.swt.graphics,\
+com.jogamp.opengl.fixedfunc,\
+jogamp.opengl,\
+*
