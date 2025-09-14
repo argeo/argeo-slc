@@ -2,6 +2,8 @@ package org.argeo.cms.worldwind.swt;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.argeo.cms.worldwind.WorldWindUtils;
 import org.eclipse.swt.layout.FillLayout;
@@ -18,6 +20,8 @@ import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.layers.SurfaceImageLayer;
 import gov.nasa.worldwind.layers.Earth.BMNGWMSLayer;
 import gov.nasa.worldwind.layers.Earth.UTMGraticuleLayer;
+import gov.nasa.worldwind.layers.mercator.BasicMercatorTiledImageLayer;
+import gov.nasa.worldwind.layers.mercator.MercatorTileUrlBuilder;
 import gov.nasa.worldwind.render.SurfaceImage;
 import gov.nasa.worldwind.terrain.CompoundElevationModel;
 import gov.nasa.worldwind.terrain.LocalElevationModel;
@@ -41,7 +45,8 @@ public class DemViewer {
 				LayerList layerList = model.getLayers();
 
 				if (args.length == 0) {
-					layerList.add(new BMNGWMSLayer());
+					// layerList.add(new BMNGWMSLayer());
+					layerList.add(new BaseTileLayer());
 
 					AbstractLayer graticuleLayer = new UTMGraticuleLayer();
 					layerList.add(graticuleLayer);
@@ -97,6 +102,29 @@ public class DemViewer {
 				display.sleep();
 		}
 		display.dispose();
+	}
+
+	/** Experiment with generic tile layer. Not working yet. */
+	static class BaseTileLayer extends BasicMercatorTiledImageLayer {
+		public BaseTileLayer() {
+			super("h", "Earth/Base-Mercator/Base Tile Layer", 13, 256, false, ".jpeg", new URLBuilder());
+		}
+
+		private static class URLBuilder extends MercatorTileUrlBuilder {
+			@Override
+			protected URL getMercatorURL(int x, int y, int z) throws MalformedURLException {
+				String str = "https://readymap.org/readymap/tiles/1.0.0/7/" + z + "/" + x + "/" + y + ".jpeg";
+				System.out.println(str);
+				return new URL(str);
+				// return new URL("https://tile.openstreetmap.org/" + z + "/" + x + "/" + y +
+				// ".png");
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "BaseTileLayer";
+		}
 	}
 
 }
