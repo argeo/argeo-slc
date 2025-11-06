@@ -3,4 +3,6 @@ org.eclipse.swt,\
 org.eclipse.swt.graphics,\
 com.jogamp.opengl.fixedfunc,\
 jogamp.opengl,\
+gov.nasa.worldwind.view,\
+gov.nasa.worldwind.avlist,\
 *
