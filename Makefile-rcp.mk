@@ -9,9 +9,11 @@ BUNDLES = \
 swt/rcp/org.argeo.cms.e4.rcp \
 swt/rcp/org.argeo.tool.rcp.cli \
 swt/rcp/org.argeo.tool.desktop \
+swt/rcp/org.argeo.cms.lib.worldwind \
 
 DEP_CATEGORIES = \
 org.argeo.tp \
+org.argeo.tp.desktop \
 osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rcp/org.argeo.tp.swt \

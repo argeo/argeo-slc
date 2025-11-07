@@ -73,7 +73,7 @@ public class DebFile {
 			arIn.getNextArEntry();// control archive
 			ArArchiveEntry dataArchiveEntry = arIn.getNextArEntry();
 			processArArchiveEntry(dataArchiveEntry, arIn, process);
-		} catch (IOException | CompressorException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Cannot open data archive of " + url, e);
 		}
 	}
@@ -86,7 +86,7 @@ public class DebFile {
 			checkVersion(arIn);
 			ArArchiveEntry controlArchiveEntry = arIn.getNextArEntry();
 			processArArchiveEntry(controlArchiveEntry, arIn, process);
-		} catch (IOException | CompressorException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Cannot open control archive of " + url, e);
 		}
 	}
