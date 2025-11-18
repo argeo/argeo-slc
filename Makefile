@@ -39,7 +39,6 @@ swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
-lib/x86_64-linux-gnu/org.argeo.tp.sys \
 $(A2_CATEGORY)
 
 ifeq ($(msys_version), 0)	
