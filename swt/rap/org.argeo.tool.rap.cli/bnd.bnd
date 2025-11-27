@@ -1,0 +1,5 @@
+Import-Package: \
+org.eclipse.jetty.util.component,\
+org.eclipse.jetty.session,\
+org.eclipse.jetty.server.handler,\
+*
