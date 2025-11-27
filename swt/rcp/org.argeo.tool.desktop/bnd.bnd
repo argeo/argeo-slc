@@ -1,5 +1,0 @@
-Main-Class: org.argeo.slc.tool.Main
-
-Import-Package: \
-org.apache.sshd.client.session,\
-*

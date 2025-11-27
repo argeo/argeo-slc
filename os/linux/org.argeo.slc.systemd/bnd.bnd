@@ -1,6 +1,0 @@
-Service-Component: OSGI-INF/systemdServiceStatistics.xml
-
-
-Import-Package:\
-de.thjom.java.systemd.features,\
-*
