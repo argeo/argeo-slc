@@ -17,6 +17,7 @@ BUNDLES = \
 org.argeo.api.slc \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
+org.argeo.slc.lib.dbus \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
 
