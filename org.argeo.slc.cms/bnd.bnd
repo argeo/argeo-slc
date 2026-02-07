@@ -6,3 +6,6 @@ org.osgi.*;version="0.0.0",\
 javax.servlet,\
 javax.servlet.http,\
 *
+
+Service-Component:\
+OSGI-INF/statusHandler.xml,\
