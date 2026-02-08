@@ -12,6 +12,7 @@ swt/rcp/org.argeo.cms.lib.worldwind \
 DEP_CATEGORIES = \
 org.argeo.tp \
 org.argeo.tp.desktop \
+lib/org.argeo.tp.sys \
 lib/org.argeo.tp.desktop \
 osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \

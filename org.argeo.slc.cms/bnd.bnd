@@ -3,8 +3,6 @@ Import-Package: \
 org.postgresql;version="[42,43)";resolution:=optional,\
 org.apache.commons.vfs2.*;resolution:=optional,\
 org.osgi.*;version="0.0.0",\
-javax.servlet,\
-javax.servlet.http,\
 *
 
 Service-Component:\
