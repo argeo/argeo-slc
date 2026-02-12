@@ -88,7 +88,7 @@ public class EmailUtils {
 		}
 	}
 
-    protected static String getUnixFrom(MimeMessage msg) {
+    public static String getUnixFrom(MimeMessage msg) {
 	Address[] afrom;
 	String from;
 	Date ddate;
