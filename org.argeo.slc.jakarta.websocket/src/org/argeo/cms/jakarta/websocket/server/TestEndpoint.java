@@ -1,25 +1,14 @@
-package org.argeo.cms.integration;
+package org.argeo.cms.jakarta.websocket.server;
 
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.Subject;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.EndpointConfig;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.RemoteEndpoint;
-import jakarta.websocket.Session;
-import jakarta.websocket.server.PathParam;
-import jakarta.websocket.server.ServerEndpoint;
 
 import org.argeo.api.acr.ldap.NamingUtils;
 import org.argeo.api.cms.CmsLog;
-import org.argeo.cms.jakarta.websocket.server.CmsWebSocketConfigurator;
-import org.argeo.cms.jakarta.websocket.server.WebSocketView;
+import org.argeo.cms.integration.CmsExceptionsChain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -30,6 +19,17 @@ import org.osgi.service.event.EventHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.RemoteEndpoint;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
 
 /** Provides WebSocket access. */
 @ServerEndpoint(value = "/cms/status/test/{topic}", configurator = CmsWebSocketConfigurator.class)
