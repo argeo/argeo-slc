@@ -21,6 +21,7 @@ org.argeo.slc.lib.dbus \
 swt/org.argeo.cms.e4 \
 swt/rap/org.argeo.cms.e4.rap \
 org.argeo.slc.mail \
+org.argeo.slc.lib.jetty \
 org.argeo.slc.jakarta.websocket \
 org.argeo.slc.lib.libvirt \
 

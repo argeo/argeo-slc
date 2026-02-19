@@ -1,0 +1,6 @@
+Import-Package: \
+org.eclipse.jetty.util.component,\
+*
+
+Service-Component: \
+OSGI-INF/httpServer.xml,\
