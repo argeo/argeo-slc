@@ -3,7 +3,11 @@ include ../sdk.mk
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
-org.argeo.platform.js \
+org.argeo.api.js \
+org.argeo.js \
+
+DEP_CATEGORIES = \
+org.argeo.cms \
 
 all: npm-ci webpack osgi
 

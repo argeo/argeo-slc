@@ -1,6 +1,0 @@
-Export-Package: \
-org.argeo.platform.js,\
-
-
-Provide-Capability:\
-cms.publish;pkg=org.argeo.platform.js;file="*.png,*.js,*.map,*.css,*.html",\

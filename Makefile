@@ -32,8 +32,9 @@ swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
 $(A2_CATEGORY)
 
-all: web osgi-all
+all: osgi-all
 	$(MAKE) -f Makefile-rcp.mk all
+	$(MAKE) -C js all
 	
 install: osgi-install
 
@@ -42,12 +43,8 @@ uninstall: osgi-uninstall
 #jni:
 #	$(MAKE) -C jni
 
-## WEB
-web:
-	make -C js all
-
 clean: osgi-clean
 	$(MAKE) -f Makefile-rcp.mk clean
-	make -C js clean
+	$(MAKE) -C js clean
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk

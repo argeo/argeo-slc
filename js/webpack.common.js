@@ -11,8 +11,8 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].[contenthash].js',
-		path: path.resolve(__dirname, 'org.argeo.platform.js/org/argeo/platform/js'),
-		publicPath: '/pkg/org.argeo.platform.js',
+		path: path.resolve(__dirname, 'org.argeo.js/org/argeo/js'),
+		publicPath: '/pkg/org.argeo.js',
 		clean: true,
 	},
 	optimization: {
