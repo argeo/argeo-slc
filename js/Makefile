@@ -3,7 +3,6 @@ include ../sdk.mk
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
-org.argeo.api.js \
 org.argeo.js \
 
 DEP_CATEGORIES = \

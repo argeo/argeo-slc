@@ -5,15 +5,18 @@ A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
 org.argeo.api.slc \
+org.argeo.api.js \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
 org.argeo.slc.lib.dbus \
-swt/org.argeo.cms.e4 \
-swt/rap/org.argeo.cms.e4.rap \
 org.argeo.slc.mail \
+org.argeo.slc.ux \
 org.argeo.slc.lib.jetty \
 org.argeo.slc.jakarta.websocket \
 org.argeo.slc.lib.libvirt \
+swt/org.argeo.slc.geo.swt \
+swt/org.argeo.cms.e4 \
+swt/rap/org.argeo.cms.e4.rap \
 
 DEP_CATEGORIES = \
 crypto/fips/org.argeo.tp.crypto \

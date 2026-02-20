@@ -1,0 +1,8 @@
+Import-Package:\
+org.eclipse.swt,\
+org.argeo.cms.acr,\
+com.jogamp.opengl.awt;resolution:=optional,\
+*
+
+Provide-Capability:\
+cms.publish;pkg=org.argeo.cms.geo.swt.openlayers;file="*.png,*.js,*.css"
