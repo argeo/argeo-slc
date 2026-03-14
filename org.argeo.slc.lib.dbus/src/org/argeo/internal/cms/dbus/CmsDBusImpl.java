@@ -71,7 +71,8 @@ public class CmsDBusImpl implements CmsDBus {
 				log.error("Cannot close embedded DBus daemon", e);
 			}
 			try {
-				Files.delete(dBusDaemonSocket);
+				if (Files.exists(dBusDaemonSocket))
+					Files.delete(dBusDaemonSocket);
 			} catch (IOException e) {
 				log.error("Cannot delete DBus daemon socket " + dBusDaemonSocket, e);
 			}
