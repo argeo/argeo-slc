@@ -90,7 +90,7 @@ public class CmsLoginLifecycle implements CmsView {// TODO extends SwtAppUi
 		}
 		if (CurrentUser.getUsername(getSubject()) == null)
 			return false;
-		uxContext = new SimpleSwtUxContext();
+		uxContext = new SimpleSwtUxContext(display);
 		imageManager = (CmsImageManager) new AcrSwtImageManager();
 
 		eventBroker.subscribe(UIEvents.UILifeCycle.APP_STARTUP_COMPLETE, new EventHandler() {

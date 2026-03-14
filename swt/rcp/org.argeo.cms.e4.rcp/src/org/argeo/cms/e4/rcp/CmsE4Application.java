@@ -87,7 +87,7 @@ public class CmsE4Application implements IApplication, CmsView {
 		// return null;
 		// }
 
-		uxContext = new SimpleSwtUxContext();
+		uxContext = new SimpleSwtUxContext(display);
 		// UiContext.setData(CmsView.KEY, this);
 		CmsSwtUtils.registerCmsView(loginShell.getShell(), this);
 		e4Application = getApplication(null);
