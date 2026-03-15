@@ -1,6 +1,6 @@
 {
 	"name": "org.argeo.js",
-	"version": "2.3.0.next",
+	"version": "2.1.29",
 	"description": "",
 	"private": "true",
 	"scripts": {
