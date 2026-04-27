@@ -15,6 +15,7 @@ org.argeo.slc.lib.jetty \
 org.argeo.slc.jakarta.websocket \
 org.argeo.slc.lib.libvirt \
 swt/org.argeo.slc.geo.swt \
+swt/org.argeo.slc.de \
 swt/org.argeo.cms.e4 \
 swt/rcp/org.argeo.cms.e4.rcp \
 swt/rcp/org.argeo.cms.lib.worldwind \
