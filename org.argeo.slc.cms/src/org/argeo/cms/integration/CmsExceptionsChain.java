@@ -3,14 +3,13 @@ package org.argeo.cms.integration;
 import java.io.IOException;
 import java.io.Writer;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.util.ExceptionsChain;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /** Serialisable wrapper of a {@link Throwable}. */
 public class CmsExceptionsChain extends ExceptionsChain {
@@ -29,7 +28,7 @@ public class CmsExceptionsChain extends ExceptionsChain {
 	public String toJsonString(ObjectMapper objectMapper) {
 		try {
 			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-		} catch (JsonProcessingException e) {
+		} catch (IOException e) {
 			throw new IllegalStateException("Cannot write system exceptions " + toString(), e);
 		}
 	}
