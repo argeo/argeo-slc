@@ -1,5 +1,6 @@
 package org.argeo.slc.de.mail;
 
+import java.io.Console;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
 
@@ -20,7 +21,7 @@ public class MailApp {
 		properties.setProperty("mail.imap.ssl.trust", "*");
 
 		Session session = Session.getInstance(properties, null);
-		// session.setDebug(true);
+		session.setDebug(true);
 		Store store = session.getStore("imap");
 		store.connect(host, Integer.parseInt(port), user, password);
 		return store;
@@ -28,7 +29,18 @@ public class MailApp {
 
 	public static void main(String[] args) throws Exception {
 		MailApp mailApp = new MailApp();
-		mailApp.connectToSourceStore(args[0], args[1], args[2], args[3]);
+		
+		Console console = System.console();
+
+		if (console == null) {
+			System.err.println("Console is not available.");
+			mailApp.connectToSourceStore(args[0], args[1], args[2], args[3]);
+			System.exit(1);
+		}
+
+		char[] password = console.readPassword("Enter password: ");
+		mailApp.connectToSourceStore(args[0], args[1], args[2], new String(password));
+		// mailApp.connectToSourceStore(args[0], args[1], args[2], args[3]);
 	}
 
 }
