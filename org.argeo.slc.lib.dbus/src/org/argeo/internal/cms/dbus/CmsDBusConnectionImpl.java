@@ -1,15 +1,12 @@
 package org.argeo.internal.cms.dbus;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import org.argeo.api.cms.dbus.CmsDBusConnection;
 import org.argeo.api.cms.freedesktop.FreeDesktopApplication;
 import org.freedesktop.dbus.connections.impl.DBusConnection;
 import org.freedesktop.dbus.exceptions.DBusException;
 import org.freedesktop.dbus.interfaces.DBusInterface;
-import org.freedesktop.dbus.types.Variant;
 
 public class CmsDBusConnectionImpl implements CmsDBusConnection {
 	private final DBusConnection dBusConnection;
@@ -46,18 +43,17 @@ public class CmsDBusConnectionImpl implements CmsDBusConnection {
 					}
 
 					@Override
-					public void open(List<String> uris, Map<String, Variant<?>> platformData) {
+					public void open(String[] uris) {
 						freeDesktopApplication.open(uris);
 					}
 
 					@Override
-					public void activateAction(String actionName, List<Variant<?>> parameter,
-							Map<String, Variant<?>> platformData) {
-						freeDesktopApplication.activateAction(actionName);
+					public void activateAction(String actionName, String[] parameters) {
+						freeDesktopApplication.activateAction(actionName, parameters);
 					}
 
 					@Override
-					public void activate(Map<String, Variant<?>> platformData) {
+					public void activate() {
 						freeDesktopApplication.activate();
 					}
 				});

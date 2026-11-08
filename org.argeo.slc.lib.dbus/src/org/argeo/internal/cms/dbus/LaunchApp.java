@@ -1,27 +1,21 @@
 package org.argeo.internal.cms.dbus;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.argeo.api.cms.freedesktop.FreeDesktopApplication;
 import org.freedesktop.dbus.connections.BusAddress;
 import org.freedesktop.dbus.connections.impl.DBusConnection;
 import org.freedesktop.dbus.connections.impl.DBusConnectionBuilder;
 import org.freedesktop.dbus.exceptions.DBusException;
-import org.freedesktop.dbus.types.Variant;
 
 /** Launch a FreeDesktop application. */
 public class LaunchApp {
-	private final static Method activateMethod;
-	static {
-		try {
-			// make sure the method is properly referenced
-			activateMethod = FreeDesktopApplicationInterface.class.getMethod("activate", Map.class);
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new IllegalStateException("Method not found for " + FreeDesktopApplication.class);
-		}
-	}
+//	private final static Method activateMethod;
+//	static {
+//		try {
+//			// make sure the method is properly referenced
+//			activateMethod = FreeDesktopApplicationInterface.class.getMethod("activate", Map.class);
+//		} catch (NoSuchMethodException | SecurityException e) {
+//			throw new IllegalStateException("Method not found for " + FreeDesktopApplication.class);
+//		}
+//	}
 
 	private final DBusConnection dBusConnection;
 	private final String path;
@@ -42,7 +36,26 @@ public class LaunchApp {
 		} catch (DBusException e) {
 			throw new IllegalArgumentException("App " + path + " cannot be found", e);
 		}
-		dBusConnection.callMethodAsync(app, activateMethod.getName(), new HashMap<String, Variant<?>>());
+
+		app.activate();
+
+//		DBusAsyncReply<?> reply = dBusConnection.callMethodAsync(app, activateMethod.getName(),
+//				new HashMap<String, Variant<?>>());
+//		
+//		while (!reply.hasReply()) {
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e) {
+//				// silent
+//			}
+//		}
+//		
+//		try {
+//			System.out.println(reply.getReply());
+//		} catch (DBusException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	public static void main(String[] args) throws Exception {
